@@ -1,0 +1,181 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feliz Aniversário, Supervisora Simone!</title>
+  <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+  <style>
+    body {
+      background-image: url('https://previews.123rf.com/images/klyaksun/klyaksun2006/klyaksun200602108/148466626-kids-birthday-party-decoration-festive-cake-with-four-years-old-candle-on-table-with-plates-and.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(30, 64, 175, 0.7); /* Azul semi-transparente para melhor legibilidade */
+      z-index: 1;
+    }
+    .content {
+      text-align: center;
+      padding: 1.5rem;
+      max-width: 28rem;
+      margin-left: auto;
+      margin-right: auto;
+      z-index: 10;
+      position: relative;
+    }
+    .text-3xl {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+    .font-bold {
+      font-weight: 700;
+    }
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+    .text-lg {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+    .balloon {
+      position: absolute;
+      bottom: -50px;
+      width: 40px;
+      height: 50px;
+      background-color: red;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: float 6s infinite ease-in-out;
+      opacity: 0.8;
+    }
+    .balloon::before {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background-color: white;
+      transform: translateX(-50%);
+    }
+    .balloon:nth-child(1) { left: 10%; background-color: #FF69B4; animation-duration: 5s; animation-delay: 0s; }
+    .balloon:nth-child(2) { left: 30%; background-color: #FFD700; animation-duration: 7s; animation-delay: 1s; }
+    .balloon:nth-child(3) { left: 50%; background-color: #00FF00; animation-duration: 6s; animation-delay: 2s; }
+    .balloon:nth-child(4) { left: 70%; background-color: #00BFFF; animation-duration: 8s; animation-delay: 0.5s; }
+    .balloon:nth-child(5) { left: 90%; background-color: #FF4500; animation-duration: 5.5s; animation-delay: 1.5s; }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-120vh); }
+    }
+    button {
+      background-color: white;
+      color: #1E40AF;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #E5E7EB;
+    }
+    .signature {
+      margin-top: 1rem;
+      font-size: 1rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+
+  <div class="content">
+    <p class="text-lg mb-4">Você achou mesmo que a gente ia esquecer essa data tão especial?</p>
+    <p class="text-lg mb-4">Parabéns pra você! Que venham muitos e muitos anos de vida, conquistas e alegrias!</p>
+    <p class="text-lg mb-6">Agora é hora de tirar o topo da SMAR e colocar o seu topo de PARABÉNS!</p>
+    <h1 class="text-3xl font-bold mb-4">O código é:<br>FELIZ ANIVERSÁRIO!</h1>
+    <button id="celebrateBtn">Comemorar!</button>
+    <p class="signature">Com carinho<br>Equipe Honório Fraga<br>2025</p>
+  </div>
+
+  <script>
+    const confetti = new JSConfetti();
+    document.getElementById('celebrateBtn').addEventListener('click', () => {
+      confetti.addConfetti({
+        emojis: ['🎉', '🥳', '🎂', '🎈', '🥂'],
+        emojiSize: 50,
+        confettiNumber: 100,
+      });
+      confetti.addConfetti({
+        confettiColors: ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7'],
+        confettiRadius: 6,
+        confettiNumber: 400,
+      });
+    });
+  </script>
+</body>
+</html>
